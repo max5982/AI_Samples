@@ -57,40 +57,84 @@ embeddings = HuggingFaceEmbeddings(model_name=model_name, model_kwargs=model_kwa
 # Step 4: Use vector store to store embeddings
 vectorstore = FAISS.from_documents(all_splits, embeddings)
 
-
-model_id = '../llama-2-7b-chat-hf'
+model_name = "llama-2-7b-chat-hf"
+model_id = '../' + model_name
 tokenizer = LlamaTokenizer.from_pretrained(model_id)
 #model = LlamaForCausalLM.from_pretrained(model_id, load_in_8bit=True, device_map='auto', torch_dtype=torch.float16)
 #model = LlamaForCausalLM.from_pretrained(model_id, load_in_4bit=True, device_map='auto', torch_dtype=torch.float16)
-model = LlamaForCausalLM.from_pretrained(model_id, load_in_4bit=True, device_map='auto', torch_dtype='auto', cache_dir='../llama-2-7b-chat')
+model = LlamaForCausalLM.from_pretrained(model_id, load_in_8bit=True, device_map='auto', torch_dtype='auto', cache_dir='../llama-2-7b-chat')
 
 # Temperature: Adjusts randomness of outputs, greater than 1 is random and 0 is deterministic, 0.75 is a good starting value
 # top_p: When decoding text, samples from the top p percentage of most likely tokens; lower to ignore less likely tokens
 # max_new_tokens: Maximum number of tokens to generate. A word is generally 2-3 tokens
 
-hf_pipeline = pipeline("text-generation", model=model, tokenizer=tokenizer, do_sample=True, temperature=0.7, top_p=0.9, max_new_tokens=100)
+hf_pipeline = pipeline("text-generation", model=model, tokenizer=tokenizer, do_sample=True, temperature=0.7, top_p=0.9, max_new_tokens=160)
 hf_llm = HuggingFacePipeline(pipeline=hf_pipeline)
 
 
 # Query against your own data
 chain = ConversationalRetrievalChain.from_llm(hf_llm, vectorstore.as_retriever(), return_source_documents=True)
 
+print("==============================================")
+print(f"Model: {model_name}")
+print("==============================================")
+print("")
 chat_history = []
-query = "How to lock the door with smart key?"
-print("[query]: {}".format(query))
 
+
+query = "How to lock the door with smart key?"
+print("==============================================")
+print(f"[query]: {query}")
 start = time.perf_counter()
 result = chain({"question": query, "chat_history": chat_history})
-print(result['answer'])
+print(f"[answer]: {result['answer']}")
 e2e_inference_time = (time.perf_counter()-start)*1000
-print(f"the inference time is {e2e_inference_time} ms")
-
+print(f"[time] it takes {e2e_inference_time} ms")
+print("==============================================")
 print("")
+
+
+
 query = "If the car engine stalls while driving, what should I do?"
-print("[query]: {}".format(query))
+print("==============================================")
+print(f"[query]: {query}")
 start = time.perf_counter()
 #query = "How is Meta approaching open science in two short sentences?"
 result = chain({"question": query, "chat_history": chat_history})
-print(result['answer'])
+print(f"[answer]: {result['answer']}")
 e2e_inference_time = (time.perf_counter()-start)*1000
-print(f"the inference time is {e2e_inference_time} ms")
+print(f"[time] it takes {e2e_inference_time} ms")
+print("==============================================")
+print("")
+
+
+
+query = "What is the brand Kia?"
+print("==============================================")
+print(f"[query]: {query}")
+start = time.perf_counter()
+result = chain({"question": query, "chat_history": chat_history})
+print(f"[answer]: {result['answer']}")
+e2e_inference_time = (time.perf_counter()-start)*1000
+print(f"[time] it takes {e2e_inference_time} ms")
+print("==============================================")
+
+
+while True:
+    user_input = input("Query: ")
+
+    if user_input == "exit":
+        break
+
+    query = user_input
+    print("==============================================")
+    print(f"[query]: {query}")
+    start = time.perf_counter()
+    result = chain({"question": query, "chat_history": chat_history})
+    print(f"[answer]: {result['answer']}")
+    e2e_inference_time = (time.perf_counter()-start)*1000
+    print(f"[time] it takes {e2e_inference_time} ms")
+    print("==============================================")
+
+    
+
