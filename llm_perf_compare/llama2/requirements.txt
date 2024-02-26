@@ -1,0 +1,14 @@
+# Standard PyPI packages
+datasets
+accelerate
+gradio
+onnx>=1.8.0  # Specify version if needed
+einops
+transformers_stream_generator
+tiktoken
+transformers>=4.37.0
+bitsandbytes
+
+# Packages from external repositories
+git+https://github.com/huggingface/optimum-intel.git
+nncf>=2.8.0
