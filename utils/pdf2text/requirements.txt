@@ -1,0 +1,6 @@
+pdfplumber
+pymupdf
+pdf2image
+pytesseract
+pillow
+tesseract
