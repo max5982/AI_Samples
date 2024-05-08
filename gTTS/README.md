@@ -38,3 +38,11 @@ Run the python code.
   ```sh
   gtts-cli --all
   ```
+
+### SSML
+https://cloud.google.com/sdk/docs/install#deb
+
+  ```sh
+  pip install --upgrade google-cloud-texttospeech
+  export GOOGLE_APPLICATION_CREDENTIALS="/home/user/Downloads/service-account-file.json"
+  ```
