@@ -42,8 +42,9 @@ Run the python code.
 ### SSML
 https://cloud.google.com/docs/authentication/provide-credentials-adc#how-to
 https://cloud.google.com/sdk/docs/install#deb
+https://cloud.google.com/text-to-speech/docs/ssml
 
   ```sh
   pip install --upgrade google-cloud-texttospeech
-  export GOOGLE_APPLICATION_CREDENTIALS="/home/user/Downloads/service-account-file.json"
+  export GOOGLE_APPLICATION_CREDENTIALS="application_default_credentials.json"
   ```
